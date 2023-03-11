@@ -170,10 +170,11 @@ export default {
 <style lang="scss">
   $clouds: "../assets/clouds/";
   .page {
-    height: 100%;
+    min-height: 100vh;
     background-repeat: repeat-x;
     background-size: auto 25vh;
     background-blend-mode: overlay;
+    background-attachment: fixed;
     &.winter { background-image: url('../assets/trees/winter.png'); }
     &.spring { background-image: url('../assets/trees/spring.png'); }
     &.summer { background-image: url('../assets/trees/summer.png'); }
