@@ -19,6 +19,12 @@ export default {
       locations: [],
       detailDialog: false,
       detail: {},
+      weatherConditions: {
+        'grey': ["drizzle", "rain", "overcast",],
+        'lightblue': ["mist"],
+        'lightgrey': ["snow", "blizzard"],
+        'darkgrey': ["thunder", "lightning", "storm"],
+      },
     }
   },
   methods: {
@@ -100,27 +106,33 @@ export default {
       let dateObj = new Date(this.weather.current.last_updated_epoch * 1000);
       return dateObj.toLocaleTimeString().slice(0, -3);
     },
-    bodyClass() {
+    bodyWeather() {
       if (this.weather != undefined) {
         let condition = this.weather.current.condition.text.replace(" ", "-").toLowerCase();
-        if (condition.search("drizzle") != -1
-          || condition.search("rain") != -1
-          || condition.search("overcast") != -1) return "grey";
-        if (condition.search("thunder") != -1
-          || condition.search("lightning") != -1
-          || condition.search("storm") != -1) return "dark-grey";
-        if (condition.search("snow") != -1
-          || condition.search("blizzard") != -1
-          || condition.search("mist") != -1) return "light-grey";
+        for (let index in this.weatherConditions) {
+          let conditions = this.weatherConditions[index];
+          if (conditions.some(el => condition.includes(el))) {
+            return index;
+          }
+        }
       }
       return "sunny";
+    },
+    bodySeason() {
+      let today = new Date();
+      let month = today.getMonth();
+      if ([11,0,1].includes(month)) return "winter";
+      if ([2,3,4].includes(month)) return "spring";
+      if ([5,6,7].includes(month)) return "summer";
+      if ([8,9,10].includes(month)) return "autumn";
+      return "summer";
     },
   },
 }
 </script>
 
 <template>
-  <div v-if="weather != undefined" :class="'page ' + bodyClass">
+  <div v-if="weather != undefined" class="page" :class="[bodyWeather, bodySeason]">
     <div class="header">
       <div class="clouds_one"></div>
       <div class="clouds_two"></div>
@@ -133,12 +145,12 @@ export default {
     <v-container class="w-100 content">
       <v-row no-gutters>
         <DayThumb :data="weather.current" :location="weather.location.name"
-          :key="key" :date="weather.current.last_updated_epoch * 1000"
+          key="current" :date="weather.current.last_updated_epoch * 1000"
           class="mx-auto mx-sm-0 ma-2 pa-2 v-col-12 v-col-sm-4 v-col-md-4" />
       </v-row>
       <v-row no-gutters>
         <v-autocomplete clearable v-model="newLocation" v-model:search="search"
-          :loading="loading" :items="locations" item-title="title" item-value="location"
+          :items="locations" item-title="title" item-value="location"
           density="comfortable" hide-no-data hide-details variant="solo"
           label="Search by city" class="mt-md-2 ma-2"
           @input="searchLocation"></v-autocomplete>
@@ -159,10 +171,18 @@ export default {
   $clouds: "../assets/clouds/";
   .page {
     height: 100%;
+    background-repeat: repeat-x;
+    background-size: auto 25vh;
+    background-blend-mode: overlay;
+    &.winter { background-image: url('../assets/trees/winter.png'); }
+    &.spring { background-image: url('../assets/trees/spring.png'); }
+    &.summer { background-image: url('../assets/trees/summer.png'); }
+    &.autumn { background-image: url('../assets/trees/autumn.png'); }
+    background-position: bottom;
     $start: #014e9b;
     $middle: #1084C0;
     $main: #4d95be;
-    background: $main;
+    background-color: $main;
     .cloudbg {
       background: $main;
       background: -webkit-linear-gradient(top, $start 0, $middle 68%, $main 100%);
@@ -173,7 +193,7 @@ export default {
       $cloudbg1: #517394 !important;
       $cloudbg2: #74a4bb !important;
       $pagebg: #89a7b9 !important;
-      background: $pagebg;
+      background-color: $pagebg;
       .cloudbg {
         background: $pagebg;
         background: -webkit-linear-gradient(top, $cloudbg1 0, $cloudbg2 68%, $pagebg 100%);
@@ -181,11 +201,11 @@ export default {
         filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=$cloudbg1, endColorstr=$pagebg, GradientType=0);
       }
     }
-    &.dark-grey {
+    &.darkgrey {
       $cloudbg1: #2c3f51 !important;
       $cloudbg2: #445f6d !important;
       $pagebg: #566873 !important;
-      background: $pagebg;
+      background-color: $pagebg;
       .cloudbg {
         background: $pagebg;
         background: -webkit-linear-gradient(top, $cloudbg1 0, $cloudbg2 68%, $pagebg 100%);
@@ -193,11 +213,11 @@ export default {
         filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=$cloudbg1, endColorstr=$pagebg, GradientType=0);
       }
     }
-    &.light-grey {
+    &.lightgrey {
       $cloudbg1: #bfbfbf !important;
       $cloudbg2: #d1d1d1 !important;
       $pagebg: #e4e4e4 !important;
-      background: $pagebg;
+      background-color: $pagebg;
       .cloudbg {
         background: $pagebg;
         background: -webkit-linear-gradient(top,$cloudbg1 0, $cloudbg2 68%, $pagebg 100%);

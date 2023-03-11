@@ -11,7 +11,7 @@ export default {
       default: ''
     },
     date: {
-      type: String,
+      type: [String, Number],
       default: ''
     },
     isDay: {
@@ -27,6 +27,7 @@ export default {
     formattedDate() {
       let dateObj = new Date(this.date);
       if (this.isHour) return dateObj.toLocaleTimeString().slice(0, -3);
+      if (this.isToday) return "Today";
       return dateObj.toDateString().slice(0, -5);
     },
     subTitle() {
@@ -39,7 +40,12 @@ export default {
     },
     temp() {
       return this.isDay ? this.data.avgtemp_c : this.data.temp_c;
-    }
+    },
+    isToday() {
+      let today = new Date();
+      let selectedDay = new Date(this.date);
+      return today.toDateString() == selectedDay.toDateString();
+    },
   },
 }
 </script>

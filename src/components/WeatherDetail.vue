@@ -33,6 +33,7 @@ export default {
   },
   computed: {
     formattedDate() {
+      if (this.isToday) return "Today";
       let dateObj = new Date(this.data.date);
       return dateObj.toDateString().slice(0, -5);
     },
@@ -42,18 +43,19 @@ export default {
       }
       return [];
     },
+    isToday() {
+      let today = new Date();
+      let selectedDay = new Date(this.data.date);
+      return today.toDateString() == selectedDay.toDateString();
+    },
   },
   watch: {
     dialog() {
       this.dialogVisible = this.dialog;
-      if (this.dialog) {
-        let today = new Date();
-        let selectedDay = new Date(this.data.date);
-        if (today.toDateString() == selectedDay.toDateString()) {
-          this.$nextTick(() => {
-            this.scrollToHour();
-          });
-        }
+      if (this.dialog && this.isToday) {
+        this.$nextTick(() => {
+          this.scrollToHour();
+        });
       }
     },
   },
