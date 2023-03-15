@@ -20,7 +20,7 @@ export default {
       detailDialog: false,
       detail: {},
       weatherConditions: {
-        'grey': ["drizzle", "rain", "overcast",],
+        'grey': ["drizzle", "rain", "overcast"],
         'lightblue': ["mist"],
         'lightgrey': ["snow", "blizzard"],
         'darkgrey': ["thunder", "lightning", "storm"],
@@ -111,7 +111,7 @@ export default {
         let condition = this.weather.current.condition.text.replace(" ", "-").toLowerCase();
         for (let index in this.weatherConditions) {
           let conditions = this.weatherConditions[index];
-          if (conditions.some(el => condition.includes(el))) {
+          if (conditions.includes(condition)) {
             return index;
           }
         }
@@ -189,6 +189,18 @@ export default {
       background: -webkit-linear-gradient(top, $start 0, $middle 68%, $main 100%);
       background: linear-gradient(to bottom, $start 0, $middle 68%, $main 100%);
       filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=$start, endColorstr=$main, GradientType=0);
+    }
+    &.lightblue {
+      $cloudbg1: #718fad !important;
+      $cloudbg2: #93bbcd !important;
+      $pagebg: #a4c1d3 !important;
+      background-color: $pagebg;
+      .cloudbg {
+        background: $pagebg;
+        background: -webkit-linear-gradient(top, $cloudbg1 0, $cloudbg2 68%, $pagebg 100%);
+        background: linear-gradient(to bottom, $cloudbg1 0, $cloudbg2 68%, $pagebg 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=$cloudbg1, endColorstr=$pagebg, GradientType=0);
+      }
     }
     &.grey {
       $cloudbg1: #517394 !important;
